@@ -1,0 +1,44 @@
+name: Bootstrap source
+
+on:
+  push:
+    paths:
+      - '.github/workflows/bootstrap-source.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reassemble and verify source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat _bootstrap/part-* | base64 --decode > /tmp/posesearch-source.tar.gz
+          echo '3ee2ef3a0f56b577d3d09723d46ac033aa7b586357ddc498dd335804b9b82b86  /tmp/posesearch-source.tar.gz' | sha256sum --check --strict
+      - name: Expand source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -xzf /tmp/posesearch-source.tar.gz -C .
+          rm -rf _bootstrap
+          rm -f .github/workflows/bootstrap-source.yml
+      - name: Commit imported source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'feat: import PoseSearch v0.1.0 source'
+          git push origin HEAD:main
