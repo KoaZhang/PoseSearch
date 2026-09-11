@@ -1,6 +1,6 @@
 {
   "lock_version": 1,
-  "status": "unresolved_hashes",
+  "status": "resolving_onnx_hashes",
   "rtmlib": {
     "repository": "https://github.com/Tau-J/rtmlib",
     "version": "0.0.16",
@@ -10,23 +10,25 @@
     "name": "YOLOX-tiny HumanArt",
     "archive_name": "yolox_tiny_8xb8-300e_humanart-6f3252f9.zip",
     "source_url": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/yolox_tiny_8xb8-300e_humanart-6f3252f9.zip",
-    "archive_sha256": null,
+    "archive_sha256": "36e09ca555916253fa1b5d51bec01e48e98e1f0af966c51ce3e844d8c8fc4cfc",
     "onnx_file": "detector.onnx",
     "onnx_sha256": null,
     "input_hw": [416, 416],
     "input_wh": [416, 416],
-    "keypoint_schema": null
+    "keypoint_schema": null,
+    "mirror_url": "https://huggingface.co/Tau-J/RTMPose/resolve/main/rtmposev1/onnx_sdk/yolox_tiny_8xb8-300e_humanart-6f3252f9.zip?download=true"
   },
   "pose": {
     "name": "RTMPose-s body7",
     "archive_name": "rtmpose-s_simcc-body7_pt-body7_420e-256x192-acd4a1ef_20230504.zip",
     "source_url": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/rtmpose-s_simcc-body7_pt-body7_420e-256x192-acd4a1ef_20230504.zip",
-    "archive_sha256": null,
+    "archive_sha256": "7673922e531014906ca4f0f239b7e233b740146a10b632deaa2a28d45470d802",
     "onnx_file": "pose.onnx",
     "onnx_sha256": null,
     "input_hw": [256, 192],
     "input_wh": [192, 256],
-    "keypoint_schema": "coco17"
+    "keypoint_schema": "coco17",
+    "mirror_url": "https://huggingface.co/Tau-J/RTMPose/resolve/main/rtmposev1/onnx_sdk/rtmpose-s_simcc-body7_pt-body7_420e-256x192-acd4a1ef_20230504.zip?download=true"
   },
-  "notes": "Run scripts/resolve_models.py explicitly before production. Runtime refuses unresolved model hashes."
+  "notes": "Archive hashes are pinned. Run scripts/resolve_models.py --update-lock once to resolve the exact extracted ONNX hashes; production runtime refuses unresolved ONNX hashes."
 }
