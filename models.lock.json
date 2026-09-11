@@ -1,0 +1,32 @@
+{
+  "lock_version": 1,
+  "status": "unresolved_hashes",
+  "rtmlib": {
+    "repository": "https://github.com/Tau-J/rtmlib",
+    "version": "0.0.16",
+    "commit": "03a1693e59e4f7cd84582c0fb30459b3bf18ad42"
+  },
+  "detector": {
+    "name": "YOLOX-tiny HumanArt",
+    "archive_name": "yolox_tiny_8xb8-300e_humanart-6f3252f9.zip",
+    "source_url": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/yolox_tiny_8xb8-300e_humanart-6f3252f9.zip",
+    "archive_sha256": null,
+    "onnx_file": "detector.onnx",
+    "onnx_sha256": null,
+    "input_hw": [416, 416],
+    "input_wh": [416, 416],
+    "keypoint_schema": null
+  },
+  "pose": {
+    "name": "RTMPose-s body7",
+    "archive_name": "rtmpose-s_simcc-body7_pt-body7_420e-256x192-acd4a1ef_20230504.zip",
+    "source_url": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/rtmpose-s_simcc-body7_pt-body7_420e-256x192-acd4a1ef_20230504.zip",
+    "archive_sha256": null,
+    "onnx_file": "pose.onnx",
+    "onnx_sha256": null,
+    "input_hw": [256, 192],
+    "input_wh": [192, 256],
+    "keypoint_schema": "coco17"
+  },
+  "notes": "Run scripts/resolve_models.py explicitly before production. Runtime refuses unresolved model hashes."
+}

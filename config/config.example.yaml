@@ -1,0 +1,34 @@
+models_dir: /models
+
+roots:
+  library: /media/library
+
+runtime:
+  intra_op_threads: 2
+  inter_op_threads: 1
+  execution_mode: sequential
+  allow_spinning: false
+
+pipeline:
+  analysis_max_long_edge: 1280
+  max_persons_per_image: 3
+  score_threshold: 0.25
+  max_file_bytes: 20971520
+  max_pixels: 24000000
+
+search:
+  concurrency: 1
+  block_size: 4096
+  initial_min_coverage: 0.75
+  default_top_k: 30
+  max_top_k: 100
+
+storage:
+  sqlite_path: /data/posesearch.sqlite
+  temp_dir: /data/tmp
+  temporary_analysis_ttl_seconds: 3600
+
+auth:
+  api_keys:
+    change-me:
+      - mt-anime

@@ -1,0 +1,17 @@
+services:
+  posesearch:
+    build: .
+    container_name: posesearch
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./config/config.yaml:/config/config.yaml:ro
+      - ./models:/models:ro
+      - ./data:/data
+      - /path/to/your/library:/media/library:ro
+    environment:
+      POSEARCH_CONFIG: /config/config.yaml
+      POSEARCH_MODEL_LOCK: /app/models.lock.json
+    cpus: 3.0
+    mem_limit: 1536m
