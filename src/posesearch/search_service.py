@@ -28,6 +28,28 @@ class SearchService:
             self.searcher.replace(self.repo.load_pose_records())
             self.index_revision = revision
 
+    def _search_with_query(
+        self,
+        query: PoseRecord,
+        *,
+        scope: str,
+        mirror: str,
+        top_k: int,
+        exclude_character_id: str | None,
+        max_per_character: int | None,
+        max_per_album: int | None,
+    ) -> tuple[PoseRecord, str, str | None, list[SearchHit]]:
+        if scope == "auto":
+            effective_scope, reason = choose_auto_scope(query.quality, query.geometry.point_mask)
+        else:
+            effective_scope, reason = scope, None
+        hits = self.searcher.search(
+            query, scope=effective_scope, mirror=mirror, top_k=top_k,
+            exclude_character_id=exclude_character_id,
+            max_per_character=max_per_character, max_per_album=max_per_album,
+        )
+        return query, effective_scope, reason, hits
+
     def query_asset(
         self,
         *,
@@ -41,8 +63,6 @@ class SearchService:
         max_per_character: int | None = None,
         max_per_album: int | None = None,
     ) -> tuple[PoseRecord, str, str | None, list[SearchHit]]:
-        # NAS default is one exact CPU search at a time. Keeping the gate here
-        # also protects callers that use SearchService outside FastAPI.
         with self._search_gate:
             self.refresh_if_needed()
             people = self.repo.get_asset_pose_records(collection_id, external_id)
@@ -50,15 +70,37 @@ class SearchService:
                 people = [p for p in people if p.person_id == person_id]
             if not people:
                 raise ValueError("QUERY_POSE_NOT_USABLE")
-            # Default subject: first stored usable person. Worker stores detector-area order.
-            query = people[0]
-            if scope == "auto":
-                effective_scope, reason = choose_auto_scope(query.quality, query.geometry.point_mask)
-            else:
-                effective_scope, reason = scope, None
-            hits = self.searcher.search(
-                query, scope=effective_scope, mirror=mirror, top_k=top_k,
+            return self._search_with_query(
+                people[0], scope=scope, mirror=mirror, top_k=top_k,
                 exclude_character_id=exclude_character_id,
                 max_per_character=max_per_character, max_per_album=max_per_album,
             )
-            return query, effective_scope, reason, hits
+
+    def query_analysis(
+        self,
+        *,
+        collection_id: str,
+        analysis_id: str,
+        person_id: str | None,
+        scope: str,
+        mirror: str,
+        top_k: int,
+        exclude_character_id: str | None = None,
+        max_per_character: int | None = None,
+        max_per_album: int | None = None,
+    ) -> tuple[PoseRecord, str, str | None, list[SearchHit]]:
+        with self._search_gate:
+            self.refresh_if_needed()
+            analysis = self.repo.get_temporary_analysis(collection_id, analysis_id)
+            if analysis is None:
+                raise ValueError("ANALYSIS_NOT_FOUND")
+            people = self.repo.get_temporary_pose_records(collection_id, analysis_id)
+            if person_id is not None:
+                people = [p for p in people if p.person_id == person_id]
+            if not people:
+                raise ValueError("QUERY_POSE_NOT_USABLE")
+            return self._search_with_query(
+                people[0], scope=scope, mirror=mirror, top_k=top_k,
+                exclude_character_id=exclude_character_id,
+                max_per_character=max_per_character, max_per_album=max_per_album,
+            )

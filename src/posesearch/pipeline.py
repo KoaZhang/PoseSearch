@@ -116,3 +116,7 @@ class PosePipeline:
             persons_truncated=persons_truncated, persons=persons,
             diagnostics={"detected_persons": int(len(boxes)), "analyzed_persons": len(persons)},
         )
+
+    def decode_for_overlay(self, path: str | Path) -> DecodedImage:
+        """Decode with the exact same EXIF/alpha policy used for inference."""
+        return self._decode(path)
